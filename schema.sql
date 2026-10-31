@@ -1,0 +1,11 @@
+CREATE TABLE IF NOT EXISTS orders (
+ id TEXT PRIMARY KEY,
+ game TEXT NOT NULL,
+ player TEXT NOT NULL,
+ contact TEXT NOT NULL,
+ package_name TEXT NOT NULL,
+ amount REAL NOT NULL,
+ currency TEXT NOT NULL DEFAULT 'USD',
+ status TEXT NOT NULL DEFAULT 'PENDING',
+ created_at TEXT NOT NULL
+);

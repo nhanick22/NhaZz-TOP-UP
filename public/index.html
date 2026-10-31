@@ -1,385 +1,82 @@
-<!DOCTYPE html>
-
+[10/31/2026 12:49 PM] RENNER RED: <!doctype html>
 <html lang="km">
-
 <head>
-
-<meta charset="UTF-8">
-
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-<meta name="theme-color" content="#080d1d">
-
-<title>NHAZZ TOP UP | Fortnite V-Bucks</title>
-
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NHAZZ TOP UP</title>
 <style>
-
-:root {
-
-  --bg:#080d1d;
-
-  --panel:#111a31;
-
-  --panel2:#172442;
-
-  --blue:#38bdf8;
-
-  --purple:#8b5cf6;
-
-  --gold:#ffd166;
-
-  --white:#fff;
-
-  --muted:#aab6d0;
-
-}
-
-* {box-sizing:border-box}
-
-body {
-
-  margin:0;
-
-  background:var(--bg);
-
-  color:var(--white);
-
-  font-family:Arial,sans-serif;
-
-}
-
-a {text-decoration:none;color:inherit}
-
-header {
-
-  height:75px;
-
-  padding:0 6%;
-
-  display:flex;
-
-  align-items:center;
-
-  justify-content:space-between;
-
-  background:#0b1225;
-
-  border-bottom:1px solid #253452;
-
-}
-
-.logo {
-
-  font-size:23px;
-
-  font-weight:900;
-
-  letter-spacing:1px;
-
-}
-
-.logo span {color:var(--gold)}
-
-.support {
-
-  color:var(--blue);
-
-  font-weight:bold;
-
-  font-size:14px;
-
-}
-
-.hero {
-
-  min-height:410px;
-
-  padding:65px 20px;
-
-  display:flex;
-
-  align-items:center;
-
-  justify-content:center;
-
-  text-align:center;
-
-  background:
-
-    radial-gradient(ellipse at 50% 0%,#5940a3 0%,transparent 55%),
-
-    linear-gradient(130deg,#102d58,#17133d 55%,#080d1d);
-
-  position:relative;
-
-  overflow:hidden;
-
-}
-
-.hero:before,.hero:after {
-
-  content:"";
-
-  position:absolute;
-
-  width:250px;
-
-  height:250px;
-
-  border:2px solid #ffffff12;
-
-  transform:rotate(45deg);
-
-}
-
-.hero:before {left:-120px;top:60px}
-
-.hero:after {right:-120px;bottom:-100px}
-
-.hero-content {position:relative;z-index:1}
-
-.hero-label {
-
-  display:inline-block;
-
-  padding:7px 15px;
-
-  border:1px solid #ffffff45;
-
-  border-radius:30px;
-
-  background:#ffffff12;
-
-  color:var(--gold);
-
-  font-size:12px;
-
-  font-weight:bold;
-
-  letter-spacing:2px;
-
-}
-
-.hero h1 {
-
-  font-size:clamp(38px,7vw,65px);
-
-  line-height:1.05;
-
-  margin:20px 0 12px;
-
-  font-weight:1000;
-
-  text-shadow:0 5px 25px #0008;
-
-}
-
-.hero h1 span {color:var(--gold)}
-
-.hero p {
-
-  color:#d5def5;
-
-  font-size:16px;
-
-}
-
-.hero-button {
-
-  display:inline-block;
-
-  margin-top:17px;
-
-  background:linear-gradient(100deg,#f5b942,#ffe08a);
-
-  color:#15172a;
-
-  padding:14px 32px;
-
-  border-radius:9px;
-
-  font-weight:900;
-
-  box-shadow:0 8px 25px #e8a82d40;
-
-}
-
-.container {
-
-  width:min(1050px,92%);
-
-  margin:45px auto;
-
-}
-
-.section-title {
-
-  text-align:center;
-
-  margin-bottom:30px;
-
-}
-
-.section-title small {
-
-  color:var(--blue);
-
-  letter-spacing:3px;
-
-  font-weight:bold;
-
-}
-
-.section-title h2 {
-
-  font-size:30px;
-
-  margin:8px 0;
-
-}
-
-.section-title p {color:var(--muted)}
-
-.packages {
-
-  display:grid;
-
-  grid-template-columns:repeat(4,1fr);
-
-  gap:17px;
-
-}
-
-.package {
-
-  background:linear-gradient(160deg,#192847,#10182d);
-
-  border:1px solid #344568;
-
-  border-radius:16px;
-
-  padding:22px 13px;
-
-  text-align:center;
-
-  cursor:pointer;
-
-  position:relative;
-
-  transition:.2s;
-
-}
-
-.package:hover {
-
-  transform:translateY(-5px);
-
-  border-color:var(--blue);
-
-}
-
-.package.active {
-
-  border:2px solid var(--gold);
-
-  background:linear-gradient(160deg,#293b60,#201c48);
-
-  box-shadow:0 0 25px #8b5cf633;
-
-}
-
-.coin {
-
-  width:83px;
-
-  height:83px;
-
-  margin:0 auto 15px;
-
-  border-radius:50%;
-
-  display:grid;
-
-  place-items:center;
-
-  background:linear-gradient(145deg,#fff1a8,#e8a82d,#a65d13);
-
-  border:5px solid #ffe9a0;
-
-  box-shadow:0 5px 18px #0006,inset 0 0 0 3px #b8751d;
-
-  color:#15274a;
-
-  font-size:30px;
-
-  font-weight:1000;
-
-  text-shadow:1px 1px #fff9;
-
-}
-
-.package h3 {
-
-  font-size:19px;
-
-  margin:5px 0;
-
-}
-
-.package .usd {
-
-  color:var(--gold);
-
-  font-size:23px;
-
-  font-weight:900;
-
-  margin-top:12px;
-
-}
-
-.package .khr {
-
-  color:#b8c8e9;
-
-  font-size:14px;
-
-  margin-top:4px;
-
-}
-
-.package .select-text {
-
-  margin-top:15px;
-
-  padding:9px;
-
-  border-radius:7px;
-
-  background:#26385b;
-
-  font-weight:bold;
-
-  font-size:13px;
-
-}
-
-.package.active .select-text {
-
-  background:var(--gold);
-
-  color:#15172a;
-
-}
-
-.form-card {
-
-  max-width:650px;
-
-  margin:45px auto;
-
-  padding:28px;
-
-  border-radius:17px;
-
-  background:linear-gradient(145deg,#182644,#10182b);
+:root{--ink:#172033;--muted:#68758a;--blue:#397fe8;--line:#e6ebf2;--bg:#f6f8fb}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 Arial,sans-serif}
+header{background:#fff;border-bottom:1px solid var(--line);padding:16px max(5%,calc((100% - 1050px)/2));display:flex;justify-content:space-between;align-items:center}
+.logo{font-size:20px;font-weight:900;letter-spacing:1.5px}.logo span{color:var(--blue)}
+a{color:var(--blue);text-decoration:none}.hero{text-align:center;padding:48px 18px;background:linear-gradient(130deg,#fff,#eaf3ff)}
+.hero .gem{font-size:48px}.hero h1{margin:8px 0;font-size:clamp(25px,5vw,40px)}.hero p,.muted{color:var(--muted)}
+main{max-width:760px;margin:28px auto;padding:0 14px}.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:22px;margin:16px 0;box-shadow:0 8px 28px #182b4608}
+h2{font-size:18px;margin:0 0 14px}.field{margin:12px 0}label{display:block;font-weight:700;margin-bottom:6px}
+input,select{width:100%;padding:13px;border:1px solid #d8e0eb;border-radius:10px;font-size:15px;background:#fff}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.pkg{border:1px solid var(--line);border-radius:12px;padding:15px;text-align:center;cursor:pointer;background:#fff}.pkg.active{border:2px solid var(--blue);background:#f1f7ff}.pkg b{display:block}.price{font-size:19px;color:var(--blue);font-weight:800}
+button{border:0;border-radius:10px;background:var(--blue);color:#fff;padding:14px 18px;font-weight:700;font-size:15px;cursor:pointer;width:100%}button:disabled{opacity:.55;cursor:not-allowed}
+.notice{background:#f5f8fc;border-radius:10px;padding:12px;color:var(--muted);font-size:13px}
+#qr{display:none;text-align:center}#qr img{max-width:230px;width:100%;border:1px solid var(--line);border-radius:12px;padding:8px}
+footer{text-align:center;padding:28px;color:var(--muted);font-size:13px}
+@media(min-width:600px){.grid{grid-template-columns:repeat(3,1fr)}}
+</style></head>
+<body>
+<header><div class="logo">LUXE <span>TOP UP</span></div><a href="https://t.me/Nhamick">Telegram Support</a></header>
+<section class="hero"><div class="gem">💎</div><h1>PREMIUM DIAMOND TOP UP</h1><p>Fast · Easy · Secure</p></section>
+<main>
+<div class="card">
+<h2>01 · ជ្រើសរើសហ្គេម</h2>
+<div class="field"><select id="game"><option value="">ជ្រើសរើសហ្គេម</option><option>Rules of Survival</option><option>Free Fire</option><option>PUBG Mobile</option><option>Mobile Legends</option><option>Other</option></select></div>
+<div class="field"><label for="player">Player ID</label><input id="player" placeholder="បញ្ចូល Player ID"></div>
+<div class="field"><label for="contact">Telegram ឬ លេខទូរស័ព្ទ</label><input id="contact" placeholder="ព័ត៌មានសម្រាប់ទាក់ទងអ្នក"></div>
+</div>
+<div class="card"><h2>02 · ជ្រើសរើសកញ្ចប់</h2><div class="grid" id="packages"></div></div>
+<div class="card">
+<h2>03 · សង្ខេបការបញ្ជាទិញ</h2>
+<p>ហ្គេម៖ <b id="sGame">—</b></p><p>Player ID៖ <b id="sPlayer">—</b></p><p>កញ្ចប់៖ <b id="sPackage">—</b></p>
+<h2>សរុប៖ <span id="sPrice">$0.00</span></h2>
+<button id="create">បង្កើតការបញ្ជាទិញ</button>
+<p class="notice">នេះជាតម្លៃគំរូប៉ុណ្ណោះ។ សូមកែតម្លៃមុនដាក់ឱ្យអតិថិជនប្រើប្រាស់។ ការបញ្ជាទិញមិនទាន់បញ្ជាក់ថាបានបង់ប្រាក់ទេ។</p>
+<div class="card" id="qr">
+  <h2>04 · បង់ប្រាក់តាម KHQR</h2>
+
+  <p>លេខ Order៖ <b id="orderId"></b></p>
+
+  <img src="/khqr.png.jpg" alt="KHQR Payment"
+  style="display:block;max-width:260px;width:100%;margin:12px auto;border-radius:12px;">
+
+ <div style=“max-width:260px;margin:12px auto;padding:12px;border:2px dashed #cbd5e1;border-radius:12px;color:#64748b;text-align:center;”>
+  <b>NhaZz Top Up</b><br>
+  Thank you for supporting us! ❤️
+</div>
+
+  <p class="muted">ស្កេន QR ហើយបង់ចំនួនប្រាក់ឱ្យត្រូវនឹង Order។ បន្ទាប់មកទាក់ទង Admin ដើម្បីផ្ទៀងផ្ទាត់។</p>
+[10/31/2026 12:49 PM] RENNER RED: <a id="telegramOrder" href="https://t.me/Nhamick" target="_blank" rel="noopener">
+    <button>ផ្ញើ Order តាម Telegram</button>
+  </a>
+</div>
+<p class="muted">ស្កេន QR ហើយបង់ចំនួនប្រាក់ឱ្យត្រូវនឹង Order។ បន្ទាប់មកទាក់ទង Admin ដើម្បីផ្ទៀងផ្ទាត់។</p>
+<a id="telegramOrder" href="https://t.me/Nhamick" target="_blank" rel="noopener"><button>ផ្ញើ Order តាម Telegram</button></a>
+</div>
+</main><footer>© 2026 LUXE TOP UP · Customer support: @Nhamick</footer>
+<script>
+const packs=[{name:"100 Diamonds",price:1},{name:"310 Diamonds",price:3},{name:"520 Diamonds",price:5},{name:"1,060 Diamonds",price:10},{name:"2,180 Diamonds",price:20},{name:"5,600 Diamonds",price:50}];
+let chosen=null;
+const el=id=>document.getElementById(id);
+packs.forEach(p=>{const d=document.createElement('div');d.className='pkg';d.innerHTML=<div>💎</div><b>${p.name}</b><div class="price">$${p.price.toFixed(2)}</div>;d.onclick=()=>{document.querySelectorAll('.pkg').forEach(x=>x.classList.remove('active'));d.classList.add('active');chosen=p;refresh()};el('packages').appendChild(d)});
+function refresh(){el('sGame').textContent=el('game').value||'—';el('sPlayer').textContent=el('player').value||'—';el('sPackage').textContent=chosen?.name||'—';el('sPrice').textContent=chosen?'$'+chosen.price.toFixed(2):'$0.00'}
+['game','player'].forEach(id=>el(id).addEventListener(id==='game'?'change':'input',refresh));
+el('create').onclick=async()=>{
+ const game=el('game').value,player=el('player').value.trim(),contact=el('contact').value.trim();
+ if(!game||!player||!contact||!chosen){alert('សូមបំពេញព័ត៌មានទាំងអស់');return}
+ el('create').disabled=true;
+ try{
+  const r=await fetch('/api/orders',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({game,player,contact,packageName:chosen.name,amount:chosen.price,currency:'USD'})});
+  const data=await r.json();if(!r.ok)throw new Error(data.error||'មិនអាចបង្កើត Order បាន');
+  el('orderId').textContent=data.id;
+  const msg=New Top Up Order%0AOrder: ${data.id}%0AGame: ${game}%0APlayer ID: ${player}%0APackage: ${chosen.name}%0ATotal: $${chosen.price.toFixed(2)}%0AContact: ${contact};
+  el('telegramOrder').href='https://t.me/Nhamick?text='+encodeURIComponent(msg);
+  el('qr').style.display='block';el('qr').scrollIntoView({behavior:'smooth'});
+ }catch(e){alert(e.message)}finally{el('create').disabled=false}
+};
+</script></body></html>

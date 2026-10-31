@@ -1,37 +1,44 @@
-<label for="player">ឈ្មោះអតិថិជន / Order Reference</label>
+<label for="player">ឈ្មោះអតិថិជន</label>
 <input id="player" placeholder="បញ្ចូលឈ្មោះរបស់អ្នក">
 
 <label for="contact">Telegram ឬ លេខទូរស័ព្ទ</label>
 <input id="contact" placeholder="ព័ត៌មានសម្រាប់ទាក់ទងអ្នក">
+
 <div class="summary">
-  <p><span>ហ្គេម</span><b>Fortnite</b></p>
-  <p><span>កញ្ចប់</span><b id="sPackage">—</b></p>
-  <p><span>តម្លៃ USD</span><b id="sPrice">$0.00</b></p>
-  <p><span>តម្លៃ KHR</span><b id="sKHR">0៛</b></p>
+  <div class="summary-row">
+    <span>Game</span><b>Fortnite</b>
+  </div>
+  <div class="summary-row">
+    <span>Package</span><b id="sPackage">Not selected</b>
+  </div>
+  <div class="summary-row">
+    <span>USD</span><b id="sPrice">$0.00</b>
+  </div>
+  <div class="summary-row">
+    <span>KHR</span><b id="sKHR">0៛</b>
+  </div>
+  <div class="summary-row total">
+    <span>TOTAL</span><b id="sTotal">$0.00</b>
+  </div>
 </div>
+
+<button class="buy-button" id="create">CREATE ORDER</button>
 
 <div class="notice">
   ការបង្កើត Order មិនមែនជាការបញ្ជាក់ថាបានបង់ប្រាក់ ឬបានទទួល V-Bucks ទេ។
+  សូមរង់ចាំការបញ្ជាក់ពី Admin មុនពេលបង់ប្រាក់។
 </div>
 
-<br>
-<button id="create">បង្កើតការបញ្ជាទិញ</button>
-
 <div id="result">
-  <h2>04 · ព័ត៌មាន Order</h2>
-  <p>លេខ Order៖ <b id="orderId"></b></p>
-
+  <h3>YOUR ORDER CREATED</h3>
+  <p>Order ID: <b id="orderId"></b></p>
   <img src="/khqr.png.jpg" alt="NHAZZ TOP UP KHQR">
-
-  <p class="muted">
-    សូមទាក់ទង Admin ដើម្បីទទួលការណែនាំអំពីការទូទាត់។
-    កុំបង់ប្រាក់រហូតដល់ការបញ្ជាទិញត្រូវបានបញ្ជាក់។
+  <p class="sub">
+    សូមទាក់ទង Admin ដើម្បីផ្ទៀងផ្ទាត់ Order និងទទួលការណែនាំអំពីការទូទាត់។
   </p>
-
-  <a id="telegramOrder"
+  <a id="telegramOrder" class="telegram-button"
      href="https://t.me/Nhamick"
-     target="_blank"
-     rel="noopener">
-    <button type="button">ផ្ញើ Order តាម Telegram</button>
+     target="_blank" rel="noopener">
+    SEND ORDER TO TELEGRAM
   </a>
 </div>

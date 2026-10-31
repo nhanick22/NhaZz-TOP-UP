@@ -1,5 +1,200 @@
-NhaZz-TOP-UP
-└── public
-    ├── index.html
-    └── admin
-        └── index.html
+[10/31/2026 11:06 AM] NhaZz: <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NHAZZ TOP UP - Admin</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;padding:20px;background:#0b1020;color:white;font-family:Arial,sans-serif}
+.container{max-width:1000px;margin:auto}
+.card{background:#151d32;padding:20px;border-radius:14px;margin-bottom:18px}
+h1{color:#38bdf8}
+input,button,select{padding:12px;border-radius:8px;border:0;margin:5px 0}
+input{width:100%;background:#26334d;color:white}
+button{background:#0284c7;color:white;font-weight:bold;cursor:pointer}
+button:disabled{opacity:.5}
+.hidden{display:none}
+.order{background:#26334d;padding:15px;border-radius:10px;margin:12px 0}
+.order p{margin:7px 0;overflow-wrap:anywhere}
+.status{color:#facc15;font-weight:bold}
+select{background:#0f172a;color:white}
+.small{color:#94a3b8;font-size:13px}
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="card" id="login">
+<h1>NHAZZ TOP UP</h1>
+<h2>Admin Login</h2>
+<p>Enter your Admin Password</p>
+<input id="token" type="password" placeholder="Admin Password">
+<button id="loginBtn">LOGIN</button>
+<p id="loginMsg" class="small"></p>
+</div>
+
+<div id="dashboard" class="hidden">
+<div class="card">
+<h1>NHAZZ TOP UP ADMIN</h1>
+<p>Order Management Dashboard</p>
+<button id="refresh">REFRESH ORDERS</button>
+<button id="logout">LOG OUT</button>
+</div>
+
+<div class="card">
+<h2>Orders</h2>
+<p id="count">Loading...</p>
+<div id="orders"></div>
+</div>
+</div>
+
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+let adminToken = "";
+
+async function loadOrders(){
+  $("count").textContent = "Loading orders...";
+  $("orders").textContent = "";
+
+  try {
+    const response = await fetch("/api/admin/orders", {
+      headers: {
+        "Authorization": "Bearer " + adminToken
+      }
+    });
+
+    if(!response.ok){
+      if(response.status === 401) throw new Error("Password incorrect or unauthorized");
+      throw new Error("Could not load orders");
+    }
+
+    const data = await response.json();
+
+    $("count").textContent = "Total Orders: " + data.length;
+
+    if(!data.length){
+      $("orders").textContent = "No orders yet.";
+      return;
+    }
+
+    data.forEach(order => {
+      const card = document.createElement("div");
+      card.className = "order";
+
+      function line(label, value){
+        const p = document.createElement("p");
+        p.textContent = label + ": " + (value ?? "-");
+        card.appendChild(p);
+      }
+
+      line("Order ID", order.id);
+      line("Game", order.game);
+      line("Player ID", order.player);
+      line("Contact", order.contact);
+      line("Package", order.package_name);
+      line("Amount", "$" + Number(order.amount).toFixed(2));
+      line("Created", order.created_at);
+
+      const status = document.createElement("p");
+      status.className = "status";
+      status.textContent = "Status: " + order.status;
+      card.appendChild(status);
+
+      const select = document.createElement("select");
+
+      ["PENDING","PAID","DELIVERED","REJECTED"].forEach(value => {
+        const option = document.createElement("option");
+        option.value = value;
+        option.textContent = value;
+        if(value === order.status) option.selected = true;
+        select.appendChild(option);
+      });
+
+      card.appendChild(select);
+
+      const save = document.createElement("button");
+      save.textContent = "UPDATE STATUS";
+      save.onclick = async () => {
+        save.disabled = true;
+        try {
+          const result = await fetch("/api/admin/orders", {
+            method: "PATCH",
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": "Bearer " + adminToken
+            },
+            body: JSON.stringify({
+              id: order.id,
+              status: select.value
+            })
+          });
+
+          const answer = await result.json();
+          if(!result.ok) throw new Error(answer.error || "Update failed");
+
+          alert("Order updated successfully!");
+          await loadOrders();
+[10/31/2026 11:06 AM] NhaZz: } catch(error) {
+          alert(error.message);
+          save.disabled = false;
+        }
+      };
+
+      card.appendChild(save);
+      $("orders").appendChild(card);
+    });
+
+  } catch(error) {
+    $("count").textContent = error.message;
+  }
+}
+
+$("loginBtn").onclick = async () => {
+  const password = $("token").value.trim();
+
+  if(!password){
+    $("loginMsg").textContent = "Please enter your password.";
+    return;
+  }
+
+  adminToken = password;
+  $("loginBtn").disabled = true;
+  $("loginMsg").textContent = "Checking password...";
+
+  try {
+    const response = await fetch("/api/admin/orders", {
+      headers: {
+        "Authorization": "Bearer " + adminToken
+      }
+    });
+
+    if(!response.ok) throw new Error("Incorrect password. Please try again.");
+
+    $("login").classList.add("hidden");
+    $("dashboard").classList.remove("hidden");
+    $("token").value = "";
+    await loadOrders();
+
+  } catch(error) {
+    adminToken = "";
+    $("loginMsg").textContent = error.message;
+  } finally {
+    $("loginBtn").disabled = false;
+  }
+};
+
+$("refresh").onclick = loadOrders;
+
+$("logout").onclick = () => {
+  adminToken = "";
+  $("dashboard").classList.add("hidden");
+  $("login").classList.remove("hidden");
+  $("loginMsg").textContent = "";
+};
+
+</script>
+</body>
+</html>

@@ -1,8 +1,8 @@
-name = "luxe-topup"
+name = "hhazz-topup"
 compatibility_date = "2026-10-31"
 pages_build_output_dir = "public"
 
 [[d1_databases]]
 binding = "DB"
-database_name = "luxe-topup-db"
+database_name = "nhazz-topup-db"
 database_id = "fe6d6c15-7be9-41bb-a929-cc03ef1fa2e5"

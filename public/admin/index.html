@@ -1,25 +1,23 @@
-[10/31/2026 11:06 AM] NhaZz: <!DOCTYPE html>
+[10/31/2026 11:12 AM] NhaZz: <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>NHAZZ TOP UP - Admin</title>
+<title>NHAZZ TOP UP ADMIN</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;padding:20px;background:#0b1020;color:white;font-family:Arial,sans-serif}
-.container{max-width:1000px;margin:auto}
-.card{background:#151d32;padding:20px;border-radius:14px;margin-bottom:18px}
+body{margin:0;padding:20px;background:#0b1020;color:white;font-family:Arial}
+.container{max-width:900px;margin:auto}
+.card,.order{background:#17233b;padding:20px;border-radius:14px;margin-bottom:15px}
 h1{color:#38bdf8}
-input,button,select{padding:12px;border-radius:8px;border:0;margin:5px 0}
+input,button,select{padding:13px;border-radius:8px;margin:6px 0;border:0}
 input{width:100%;background:#26334d;color:white}
 button{background:#0284c7;color:white;font-weight:bold;cursor:pointer}
 button:disabled{opacity:.5}
+select{background:#26334d;color:white}
 .hidden{display:none}
-.order{background:#26334d;padding:15px;border-radius:10px;margin:12px 0}
-.order p{margin:7px 0;overflow-wrap:anywhere}
 .status{color:#facc15;font-weight:bold}
-select{background:#0f172a;color:white}
-.small{color:#94a3b8;font-size:13px}
+#error{color:#fca5a5}
 </style>
 </head>
 <body>
@@ -27,174 +25,166 @@ select{background:#0f172a;color:white}
 
 <div class="card" id="login">
 <h1>NHAZZ TOP UP</h1>
-<h2>Admin Login</h2>
+<h2>ADMIN LOGIN</h2>
 <p>Enter your Admin Password</p>
 <input id="token" type="password" placeholder="Admin Password">
-<button id="loginBtn">LOGIN</button>
-<p id="loginMsg" class="small"></p>
+<button id="loginBtn" type="button">LOGIN</button>
+<p id="error"></p>
 </div>
 
 <div id="dashboard" class="hidden">
 <div class="card">
 <h1>NHAZZ TOP UP ADMIN</h1>
-<p>Order Management Dashboard</p>
-<button id="refresh">REFRESH ORDERS</button>
-<button id="logout">LOG OUT</button>
+<p>Order Management</p>
+<button id="refresh" type="button">REFRESH ORDERS</button>
+<button id="logout" type="button">LOG OUT</button>
+<h3 id="count">Orders</h3>
 </div>
-
-<div class="card">
-<h2>Orders</h2>
-<p id="count">Loading...</p>
 <div id="orders"></div>
-</div>
 </div>
 
 </div>
 
 <script>
+(function(){
 const $ = id => document.getElementById(id);
 let adminToken = "";
 
 async function loadOrders(){
-  $("count").textContent = "Loading orders...";
-  $("orders").textContent = "";
+ $("count").textContent="Loading...";
+ $("orders").innerHTML="";
 
-  try {
-    const response = await fetch("/api/admin/orders", {
-      headers: {
-        "Authorization": "Bearer " + adminToken
-      }
-    });
+ try{
+  const r=await fetch("/api/admin/orders",{
+   headers:{"Authorization":"Bearer "+adminToken}
+  });
 
-    if(!response.ok){
-      if(response.status === 401) throw new Error("Password incorrect or unauthorized");
-      throw new Error("Could not load orders");
-    }
+  if(!r.ok) throw new Error("Cannot load orders. Check your login.");
 
-    const data = await response.json();
+  const data=await r.json();
+  $("count").textContent="Total Orders: "+data.length;
 
-    $("count").textContent = "Total Orders: " + data.length;
-
-    if(!data.length){
-      $("orders").textContent = "No orders yet.";
-      return;
-    }
-
-    data.forEach(order => {
-      const card = document.createElement("div");
-      card.className = "order";
-
-      function line(label, value){
-        const p = document.createElement("p");
-        p.textContent = label + ": " + (value ?? "-");
-        card.appendChild(p);
-      }
-
-      line("Order ID", order.id);
-      line("Game", order.game);
-      line("Player ID", order.player);
-      line("Contact", order.contact);
-      line("Package", order.package_name);
-      line("Amount", "$" + Number(order.amount).toFixed(2));
-      line("Created", order.created_at);
-
-      const status = document.createElement("p");
-      status.className = "status";
-      status.textContent = "Status: " + order.status;
-      card.appendChild(status);
-
-      const select = document.createElement("select");
-
-      ["PENDING","PAID","DELIVERED","REJECTED"].forEach(value => {
-        const option = document.createElement("option");
-        option.value = value;
-        option.textContent = value;
-        if(value === order.status) option.selected = true;
-        select.appendChild(option);
-      });
-
-      card.appendChild(select);
-
-      const save = document.createElement("button");
-      save.textContent = "UPDATE STATUS";
-      save.onclick = async () => {
-        save.disabled = true;
-        try {
-          const result = await fetch("/api/admin/orders", {
-            method: "PATCH",
-            headers: {
-              "Content-Type": "application/json",
-              "Authorization": "Bearer " + adminToken
-            },
-            body: JSON.stringify({
-              id: order.id,
-              status: select.value
-            })
-          });
-
-          const answer = await result.json();
-          if(!result.ok) throw new Error(answer.error || "Update failed");
-
-          alert("Order updated successfully!");
-          await loadOrders();
-[10/31/2026 11:06 AM] NhaZz: } catch(error) {
-          alert(error.message);
-          save.disabled = false;
-        }
-      };
-
-      card.appendChild(save);
-      $("orders").appendChild(card);
-    });
-
-  } catch(error) {
-    $("count").textContent = error.message;
+  if(!data.length){
+   $("orders").textContent="No orders yet.";
+   return;
   }
+
+  data.forEach(order=>{
+   const box=document.createElement("div");
+   box.className="order";
+
+   const details=[
+    ["Order ID",order.id],
+    ["Game",order.game],
+    ["Player ID",order.player],
+    ["Contact",order.contact],
+    ["Package",order.package_name],
+    ["Amount","$"+Number(order.amount).toFixed(2)],
+    ["Created",order.created_at]
+   ];
+
+   details.forEach(([label,value])=>{
+    const p=document.createElement("p");
+    p.textContent=label+": "+(value??"-");
+    box.appendChild(p);
+   });
+
+   const status=document.createElement("p");
+   status.className="status";
+   status.textContent="Status: "+order.status;
+   box.appendChild(status);
+
+   const select=document.createElement("select");
+
+   ["PENDING","PAID","DELIVERED","REJECTED"].forEach(s=>{
+    const option=document.createElement("option");
+    option.value=s;
+    option.textContent=s;
+    option.selected=s===order.status;
+    select.appendChild(option);
+   });
+
+   box.appendChild(select);
+
+   const btn=document.createElement("button");
+   btn.textContent="UPDATE STATUS";
+   btn.onclick=async()=>{
+    btn.disabled=true;
+    try{
+     const result=await fetch("/api/admin/orders",{
+      method:"PATCH",
+      headers:{
+       "Content-Type":"application/json",
+       "Authorization":"Bearer "+adminToken
+      },
+      body:JSON.stringify({
+       id:order.id,
+       status:select.value
+      })
+     });
+
+     if(!result.ok) throw new Error("Update failed");
+
+     alert("Order updated!");
+     await loadOrders();
+    }catch(e){
+     alert(e.message);
+     btn.disabled=false;
+    }
+   };
+   box.appendChild(btn);
+   $("orders").appendChild(box);
+  });
+
+ }catch(e){
+  $("count").textContent=e.message;
+ }
 }
 
-$("loginBtn").onclick = async () => {
-  const password = $("token").value.trim();
+$("loginBtn").addEventListener("click",async()=>{
+ const password=$("token").value.trim();
 
-  if(!password){
-    $("loginMsg").textContent = "Please enter your password.";
-    return;
-  }
+ if(!password){
+  $("error").textContent="Please enter your password.";
+  return;
+ }
 
-  adminToken = password;
-  $("loginBtn").disabled = true;
-  $("loginMsg").textContent = "Checking password...";
+ adminToken=password;
+ $("loginBtn").disabled=true;
+ $("error").textContent="Checking password...";
 
-  try {
-    const response = await fetch("/api/admin/orders", {
-      headers: {
-        "Authorization": "Bearer " + adminToken
-      }
-    });
+ try{
+  const r=await fetch("/api/admin/orders",{
+   headers:{"Authorization":"Bearer "+adminToken}
+  });
 
-    if(!response.ok) throw new Error("Incorrect password. Please try again.");
+  if(!r.ok) throw new Error("Incorrect password or server error.");
 
-    $("login").classList.add("hidden");
-    $("dashboard").classList.remove("hidden");
-    $("token").value = "";
-    await loadOrders();
+  $("login").classList.add("hidden");
+  $("dashboard").
+[10/31/2026 11:12 AM] NhaZz: classList.remove("hidden");
+  $("token").value="";
+  $("error").textContent="";
+  await loadOrders();
 
-  } catch(error) {
-    adminToken = "";
-    $("loginMsg").textContent = error.message;
-  } finally {
-    $("loginBtn").disabled = false;
-  }
-};
+ }catch(e){
+  adminToken="";
+  $("error").textContent=e.message;
+ }finally{
+  $("loginBtn").disabled=false;
+ }
+});
 
-$("refresh").onclick = loadOrders;
+$("refresh").addEventListener("click",loadOrders);
 
-$("logout").onclick = () => {
-  adminToken = "";
-  $("dashboard").classList.add("hidden");
-  $("login").classList.remove("hidden");
-  $("loginMsg").textContent = "";
-};
+$("logout").addEventListener("click",()=>{
+ adminToken="";
+ $("dashboard").classList.add("hidden");
+ $("login").classList.remove("hidden");
+ $("error").textContent="";
+});
 
+})();
 </script>
 </body>
 </html>

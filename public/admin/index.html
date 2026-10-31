@@ -46,156 +46,145 @@ select{background:#26334d;color:white}
 </div>
 
 <script>
- document.getElementById("loginBtn").onclick = function () {
-};
-(function(){$("loginBtn").addEventListener("click", async () => { const password = $("token").value.trim();
-if (!password) { $("error").textContent = "Please enter your password."; return; }
-adminToken = password; $("error").textContent = "Checking password...";
-try { const r = await fetch("/api/admin/orders", { headers: { "Authorization": "Bearer " + adminToken } });
-if (!r.ok) throw new Error("Incorrect password or server error.");
+(function () {
+  const $ = id => document.getElementById(id);
+  let adminToken = "";
 
-$("login").classList.add("hidden");
-$("dashboard").classList.remove("hidden");
-$("token").value = "";
-$("error").textContent = "";
-await loadOrders();
-} catch (e) { adminToken = ""; $("error").textContent = e.message; } });
-const $ = id => document.getElementById(id);
-let adminToken = "";
+  async function loadOrders() {
+    $("count").textContent = "Loading...";
+    $("orders").innerHTML = "";
 
-async function loadOrders(){
- $("count").textContent="Loading...";
- $("orders").innerHTML="";
+    try {
+      const r = await fetch("/api/admin/orders", {
+        headers: {
+          "Authorization": "Bearer " + adminToken
+        }
+      });
 
- try{
-  const r=await fetch("/api/admin/orders",{
-   headers:{"Authorization":"Bearer "+adminToken}
-  });
+      if (!r.ok) throw new Error("Cannot load orders.");
 
-  if(!r.ok) throw new Error("Cannot load orders. Check your login.");
+      const data = await r.json();
+      $("count").textContent = "Total Orders: " + data.length;
 
-  const data=await r.json();
-  $("count").textContent="Total Orders: "+data.length;
+      if (!data.length) {
+        $("orders").textContent = "No orders yet.";
+        return;
+      }
 
-  if(!data.length){
-   $("orders").textContent="No orders yet.";
-   return;
+      data.forEach(order => {
+        const box = document.createElement("div");
+        box.className = "order";
+
+        [
+          ["Order ID", order.id],
+          ["Game", order.game],
+          ["Player ID", order.player],
+          ["Contact", order.contact],
+          ["Package", order.package_name],
+          ["Amount", "$" + Number(order.amount).toFixed(2)],
+          ["Created", order.created_at]
+        ].forEach(([label, value]) => {
+          const p = document.createElement("p");
+          p.textContent = label + ": " + (value ?? "-");
+          box.appendChild(p);
+        });
+
+        const status = document.createElement("p");
+        status.className = "status";
+        status.textContent = "Status: " + order.status;
+        box.appendChild(status);
+
+        const select = document.createElement("select");
+
+        ["PENDING", "PAID", "DELIVERED", "REJECTED"].forEach(s => {
+          const option = document.createElement("option");
+          option.value = s;
+          option.textContent = s;
+          option.selected = s === order.status;
+          select.appendChild(option);
+        });
+
+        box.appendChild(select);
+
+        const btn = document.createElement("button");
+        btn.textContent = "UPDATE STATUS";
+
+        btn.onclick = async () => {
+          btn.disabled = true;
+
+          try {
+            const result = await fetch("/api/admin/orders", {
+              method: "PATCH",
+              headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + adminToken
+              },
+              body: JSON.stringify({
+                id: order.id,
+                status: select.value
+              })
+            });
+
+            if (!result.ok) throw new Error("Update failed.");
+
+            alert("Order updated!");
+            await loadOrders();
+          } catch (e) {
+            alert(e.message);
+            btn.disabled = false;
+          }
+        };
+
+        box.appendChild(btn);
+        $("orders").appendChild(box);
+      });
+
+    } catch (e) {
+      $("count").textContent = e.message;
+    }
   }
 
-  data.forEach(order=>{
-   const box=document.createElement("div");
-   box.className="order";
+  $("loginBtn").addEventListener("click", async () => {
+    const password = $("token").value.trim();
 
-   const details=[
-    ["Order ID",order.id],
-    ["Game",order.game],
-    ["Player ID",order.player],
-    ["Contact",order.contact],
-    ["Package",order.package_name],
-    ["Amount","$"+Number(order.amount).toFixed(2)],
-    ["Created",order.created_at]
-   ];
-
-   details.forEach(([label,value])=>{
-    const p=document.createElement("p");
-    p.textContent=label+": "+(value??"-");
-    box.appendChild(p);
-   });
-
-   const status=document.createElement("p");
-   status.className="status";
-   status.textContent="Status: "+order.status;
-   box.appendChild(status);
-
-   const select=document.createElement("select");
-
-   ["PENDING","PAID","DELIVERED","REJECTED"].forEach(s=>{
-    const option=document.createElement("option");
-    option.value=s;
-    option.textContent=s;
-    option.selected=s===order.status;
-    select.appendChild(option);
-   });
-
-   box.appendChild(select);
-
-   const btn=document.createElement("button");
-   btn.textContent="UPDATE STATUS";
-   btn.onclick=async()=>{
-    btn.disabled=true;
-    try{
-     const result=await fetch("/api/admin/orders",{
-      method:"PATCH",
-      headers:{
-       "Content-Type":"application/json",
-       "Authorization":"Bearer "+adminToken
-      },
-      body:JSON.stringify({
-       id:order.id,
-       status:select.value
-      })
-     });
-
-     if(!result.ok) throw new Error("Update failed");
-
-     alert("Order updated!");
-     await loadOrders();
-    }catch(e){
-     alert(e.message);
-     btn.disabled=false;
+    if (!password) {
+      $("error").textContent = "Please enter your password.";
+      return;
     }
-   };
-   box.appendChild(btn);
-   $("orders").appendChild(box);
+
+    adminToken = password;
+    $("error").textContent = "Checking password...";
+
+    try {
+      const r = await fetch("/api/admin/orders", {
+        headers: {
+          "Authorization": "Bearer " + adminToken
+        }
+      });
+
+      if (!r.ok) throw new Error("Incorrect password or server error.");
+
+      $("login").classList.add("hidden");
+      $("dashboard").classList.remove("hidden");
+      $("token").value = "";
+      $("error").textContent = "";
+
+      await loadOrders();
+
+    } catch (e) {
+      adminToken = "";
+      $("error").textContent = e.message;
+    }
   });
 
- }catch(e){
-  $("count").textContent=e.message;
- }
-}
+  $("refresh").addEventListener("click", loadOrders);
 
-$("loginBtn").addEventListener("click",async()=>{
- const password=$("token").value.trim();
-
- if(!password){
-  $("error").textContent="Please enter your password.";
-  return;
- }
-
- adminToken=password;
- $("loginBtn").disabled=true;
- $("error").textContent="Checking password...";
-
- try{
-  const r=await fetch("/api/admin/orders",{
-   headers:{"Authorization":"Bearer "+adminToken}
+  $("logout").addEventListener("click", () => {
+    adminToken = "";
+    $("dashboard").classList.add("hidden");
+    $("login").classList.remove("hidden");
+    $("error").textContent = "";
   });
-
-  if(!r.ok) throw new Error("Incorrect password or server error.");
-
-  $("login").classList.add("hidden");
-  $("dashboard").
-[10/31/2026 11:12 AM] NhaZz: classList.remove("hidden");
-  $("token").value="";
-  $("error").textContent="";
-  await loadOrders();
-
- }catch(e){
-  adminToken="";
-  $("error").textContent=e.message;
- }finally{
-  $("loginBtn").disabled=false;
- }
-});
-
-$("refresh").addEventListener("click",loadOrders);
-
-$("logout").addEventListener("click",()=>{
- adminToken="";
- $("dashboard").classList.add("hidden");
- $("login").classList.remove("hidden");
- $("error").textContent="";
-});
 
 })();
 </script>
